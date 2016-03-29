@@ -4,31 +4,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:gravity="center" >
 
         <Button
             android:id="@+id/start"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:onClick="startPlay"
-            android:text="play_video"/>
-    </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:text="play_video"
+            />
+        <EditText
+            android:id="@+id/urlText"
+            android:layout_width="match_parent"
+            android:layout_toLeftOf="@+id/start"
+            android:textSize="12sp"
+            android:layout_height="50dp" />
+    </RelativeLayout>
 
     <io.vov.vitamio.widget.VideoView
         android:id="@+id/surface_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:onClick="openVideo"
-        android:text="open_video"/>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
