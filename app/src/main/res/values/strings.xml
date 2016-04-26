@@ -1,4 +1,20 @@
 <resources>
     <string name="app_name">VideoStreamer</string>
     <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ip_address">IP Address</string>
+    <string name="camera_name">Camera name</string>
+    <string name="protocol">Protocol</string>
+    <string name="cameras">Cameras</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="control">Control</string>
+    <string-array name="video_protocol">
+        <item>RTSP</item>
+        <item>HTTP</item>
+        <item>MMS</item>
+        <item>RTMP</item>
+    </string-array>
 </resources>

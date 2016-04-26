@@ -9,16 +9,10 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="tran.quan.videostreamer.MainActivity"
+    tools:context=".activity.MainActivity"
     tools:showIn="@layout/activity_main">
-
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout
+        android:id="@+id/flContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <SurfaceView
-            android:id="@+id/surfaceView"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
-    </RelativeLayout>
+        android:layout_height="match_parent" />
 </RelativeLayout>

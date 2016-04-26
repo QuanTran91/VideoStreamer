@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ip_address">IP Address</string>
+    <string name="camera_name">Camera name</string>
+    <string name="protocol">Protocol</string>
+    <string name="cameras">Cameras</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+</resources>
