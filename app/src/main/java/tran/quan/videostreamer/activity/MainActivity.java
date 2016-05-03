@@ -99,9 +99,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void OnPlayItem(final CameraViewItem item) {
+        VideoPlayerFragment fragment = VideoPlayerFragment.newInstance(item);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.fragment_slide_left_enter, R.anim.fragment_slide_left_exit);
-        transaction.replace(R.id.flContent, VideoPlayerFragment.newInstance(item));
+        transaction.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                R.anim.fragment_slide_left_exit,
+                R.anim.fragment_slide_right_enter,
+                R.anim.fragment_slide_right_exit);
+        transaction.replace(R.id.flContent, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

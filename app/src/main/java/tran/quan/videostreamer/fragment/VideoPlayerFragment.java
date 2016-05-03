@@ -2,18 +2,16 @@ package tran.quan.videostreamer.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.graphics.PixelFormat;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -31,7 +29,6 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     private int mVideoWidth;
     private int mVideoHeight;
     private MediaPlayer mMediaPlayer;
-    // private SurfaceView mPreview;
     private SurfaceHolder holder;
     private String path;
     private Bundle extras;
@@ -80,7 +77,7 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
         holder.addCallback(this);
         holder.setFormat(PixelFormat.RGBA_8888);
         progressDialog = new ProgressDialog(getActivity());
-        //progressDialog.show();
+        progressDialog.show();
         return view;
     }
 
@@ -114,12 +111,42 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
 
     }
 
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        //return super.onCreateAnimation(transit, enter, nextAnim);
+        Animation anim = AnimationUtils.loadAnimation(getActivity(), nextAnim);
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                doCleanUp();
+                String path = cameraViewItem.getUrl();
+                if (path == "") {
+                    return;
+                }
+
+                PlayVideo(path);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        return anim;
+    }
+
     private void PlayVideo(String path) {
         mMediaPlayer = new MediaPlayer(getActivity());
         try {
             mMediaPlayer.setDataSource(path);
             mMediaPlayer.setDisplay(holder);
-            mMediaPlayer.prepare();
+            mMediaPlayer.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -134,15 +161,7 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        doCleanUp();
-        String path = cameraViewItem.getUrl();
-        if (path == "") {
-            // Tell the user to provide a media file URL.
-            Toast.makeText(getActivity(), "Please edit MediaPlayerDemo_Video Activity," + " and set the path variable to your media file URL.", Toast.LENGTH_LONG).show();
-            return;
-        }
-        PlayVideo(path);
-        progressDialog.dismiss();
+
     }
 
     @Override
@@ -158,6 +177,7 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
         Log.d(TAG, "onBufferingUpdate percent:" + percent);
+        progressDialog.setTitle("Loading "+ percent + "%");
     }
 
     @Override
@@ -198,6 +218,7 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
 
     private void startVideoPlayback() {
         Log.d(TAG, "startVideoPlayback");
+        progressDialog.dismiss();
         getActivity().setTitle("Camera : "+cameraViewItem.getCameraName());
         holder.setFixedSize(mVideoWidth, mVideoHeight);
         mMediaPlayer.start();
