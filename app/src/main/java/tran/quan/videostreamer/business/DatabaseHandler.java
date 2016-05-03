@@ -21,4 +21,12 @@ public class DatabaseHandler {
     public void addCamera(CameraViewItem item){
         SugarRecord.save(item);
     }
+
+    public void deleteCamera(CameraViewItem item){
+        SugarRecord.delete(item);
+    }
+
+    public CameraViewItem getCameraById(Long id){
+        return SugarRecord.findById(CameraViewItem.class,id);
+    }
 }

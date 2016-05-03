@@ -1,5 +1,6 @@
 package tran.quan.videostreamer.activity;
 
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
@@ -8,17 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.orm.SugarContext;
-import com.orm.SugarRecord;
-
 import tran.quan.videostreamer.R;
 import tran.quan.videostreamer.business.DatabaseHandler;
 import tran.quan.videostreamer.model.CameraViewItem;
 
-public class AddCameraActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddOrUpdateCameraActivity extends AppCompatActivity implements View.OnClickListener {
 
+    CameraViewItem cameraViewItem;
     EditText cameraName,ipAddress;
-    AppCompatSpinner protocolSpinner;
     Button btnOk,btnCancel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,16 +24,19 @@ public class AddCameraActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_add_camera);
         cameraName = (EditText)findViewById(R.id.camera_name);
         ipAddress = (EditText)findViewById(R.id.ip_address);
-        protocolSpinner = (AppCompatSpinner)findViewById(R.id.protocols);
         btnCancel = (Button)findViewById(R.id.btn_cancel);
         btnOk = (Button)findViewById(R.id.btn_ok);
-
         //Add button listener
         btnCancel.setOnClickListener(this);
         btnOk.setOnClickListener(this);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.video_protocol,android.R.layout.simple_spinner_dropdown_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        protocolSpinner.setAdapter(adapter);
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null){
+            Long cameraId = (Long) bundle.get("cameraId");
+            cameraViewItem = DatabaseHandler.INSTANCE.getCameraById(cameraId);
+            cameraName.setText(cameraViewItem.getCameraName());
+            ipAddress.setText(cameraViewItem.getUrl());
+        }
     }
 
     @Override
@@ -46,15 +47,15 @@ public class AddCameraActivity extends AppCompatActivity implements View.OnClick
         }
 
         if(v==btnOk){
+            v.setEnabled(false);
             addCamera();
         }
     }
 
     private void addCamera() {
-        CameraViewItem item = new CameraViewItem();
+        CameraViewItem item = cameraViewItem==null? new CameraViewItem():cameraViewItem;
         item.setCameraName(cameraName.getText().toString());
-        item.setIpAddress(ipAddress.getText().toString());
-        item.setProtocol(protocolSpinner.getSelectedItem().toString());
+        item.setUrl(ipAddress.getText().toString());
         DatabaseHandler.INSTANCE.addCamera(item);
         closeActivity();
     }

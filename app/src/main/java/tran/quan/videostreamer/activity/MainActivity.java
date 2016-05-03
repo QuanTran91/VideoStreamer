@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -38,9 +39,13 @@ import io.vov.vitamio.*;
 import io.vov.vitamio.Vitamio;
 import tran.quan.videostreamer.*;
 import tran.quan.videostreamer.R;
+import tran.quan.videostreamer.fragment.BlankFragment;
 import tran.quan.videostreamer.fragment.VideoListFragment;
+import tran.quan.videostreamer.fragment.VideoPlayerFragment;
+import tran.quan.videostreamer.interfaces.VideoListFragmentSelectedItemListener;
+import tran.quan.videostreamer.model.CameraViewItem;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,VideoListFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, VideoListFragmentSelectedItemListener {
     private String pathToFileOrUrl = "rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov";
     private io.vov.vitamio.widget.VideoView mVideoView;
     private EditText m_VideoUrlEditText;
@@ -54,20 +59,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout,toolBar, R.string.action_settings, R.string.action_settings);
-        drawerLayout.addDrawerListener(toggle);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolBar, R.string.action_settings, R.string.action_settings);
+        drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,AddCameraActivity.class);
-                startActivity(intent);
-            }
-        });
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.flContent, VideoListFragment.newInstance());
@@ -80,21 +76,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            if (fragmentManager.getBackStackEntryCount() > 0) {
+                getSupportFragmentManager().popBackStack();
+            } else {
+                super.onBackPressed();
+            }
+
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu,menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
-    }
-
-    public void startPlay(View view) {
-        pathToFileOrUrl = m_VideoUrlEditText.getText().toString();
-        if (!TextUtils.isEmpty(pathToFileOrUrl)) {
-            mVideoView.setVideoPath(pathToFileOrUrl);
-        }
     }
 
     @Override
@@ -103,7 +98,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
+    public void OnPlayItem(final CameraViewItem item) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(R.anim.fragment_slide_left_enter, R.anim.fragment_slide_left_exit);
+        transaction.replace(R.id.flContent, VideoPlayerFragment.newInstance(item));
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

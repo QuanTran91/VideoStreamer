@@ -1,31 +1,38 @@
 package tran.quan.videostreamer.fragment;
 
-import android.content.Context;
-import android.net.Uri;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
 
 import tran.quan.videostreamer.R;
+import tran.quan.videostreamer.activity.AddOrUpdateCameraActivity;
 import tran.quan.videostreamer.adapter.CameraItemAdapter;
 import tran.quan.videostreamer.business.DatabaseHandler;
+import tran.quan.videostreamer.interfaces.VideoListFragmentSelectedItemListener;
 import tran.quan.videostreamer.model.CameraViewItem;
+import tran.quan.videostreamer.viewlistener.RecyclerItemClickListener;
 
 public class VideoListFragment extends Fragment {
 
     RecyclerView cameraItemsList;
     CameraItemAdapter adapter;
-    private OnFragmentInteractionListener mListener;
+    private VideoListFragmentSelectedItemListener mListener;
+
     public VideoListFragment() {
         // Required empty public constructor
     }
+
     public static VideoListFragment newInstance() {
         VideoListFragment fragment = new VideoListFragment();
         Bundle args = new Bundle();
@@ -36,48 +43,64 @@ public class VideoListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getActivity().setTitle("List of cameras");
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_video_list, container, false);
-        cameraItemsList = (RecyclerView)view.findViewById(R.id.camera_items);
-        List<CameraViewItem> items = DatabaseHandler.INSTANCE.getCameraList();
+        cameraItemsList = (RecyclerView) view.findViewById(R.id.camera_items);
+        final List<CameraViewItem> items = DatabaseHandler.INSTANCE.getCameraList();
         adapter = new CameraItemAdapter(items);
         cameraItemsList.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         cameraItemsList.setItemAnimator(new DefaultItemAnimator());
         cameraItemsList.setAdapter(adapter);
+        cameraItemsList.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                mListener.OnPlayItem(items.get(position));
+            }
+        }));
+
         adapter.notifyDataSetChanged();
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addOrUpCamera(null);
+            }
+        });
+
         return view;
+    }
+
+    private void addOrUpCamera(CameraViewItem item){
+        Intent intent = new Intent(getActivity(), AddOrUpdateCameraActivity.class);
+        if(item != null){
+            Bundle bundle = new Bundle();
+            bundle.putLong("cameraId",item.getId());
+            intent.putExtras(bundle);
+        }
+        startActivity(intent);
     }
 
     @Override
     public void onResume() {
-        UpdateCameraList();
+        updateCameraList();
         super.onResume();
     }
 
-    private void UpdateCameraList(){
+    private void updateCameraList() {
         adapter.UpdateCameraList(DatabaseHandler.INSTANCE.getCameraList());
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof VideoListFragmentSelectedItemListener) {
+            mListener = (VideoListFragmentSelectedItemListener) activity;
         } else {
-            throw new RuntimeException(context.toString()
+            throw new RuntimeException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }
@@ -88,18 +111,19 @@ public class VideoListFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        String action = item.getTitle().toString();
+        CameraViewItem cameraViewItem = adapter.getCameraItem(itemId);
+
+        if ("Delete".equals(action)) {
+             DatabaseHandler.INSTANCE.deleteCamera(cameraViewItem);
+             updateCameraList();
+        }else if("Edit".equals(action)){
+            addOrUpCamera(cameraViewItem);
+        }
+
+        return super.onContextItemSelected(item);
     }
 }

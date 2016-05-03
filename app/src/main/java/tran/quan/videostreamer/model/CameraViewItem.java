@@ -8,12 +8,10 @@ import com.orm.dsl.Table;
  */
 @Table
 public class CameraViewItem{
-
-    private Long Id;
+    private Long id;
     private String cameraName;
     private boolean isFavorite;
-    private String ipAddress;
-    private String protocol;
+    private String url;
 
     public String getCameraName() {
         return cameraName;
@@ -31,24 +29,15 @@ public class CameraViewItem{
         isFavorite = favorite;
     }
 
-    public String getIpAddress() {
-        return ipAddress;
+    public String getUrl() {
+        return url;
     }
 
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
+    public void setUrl(String url) {
+        this.url = url;
     }
-
-    public String getProtocol() {
-        return protocol;
-    }
-
-    public void setProtocol(String protocol) {
-        this.protocol = protocol;
-    }
-
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public CameraViewItem(){}

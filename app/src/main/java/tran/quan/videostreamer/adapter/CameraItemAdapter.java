@@ -1,6 +1,8 @@
 package tran.quan.videostreamer.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,8 @@ import tran.quan.videostreamer.model.CameraViewItem;
 /**
  * Created by myrap_000 on 4/25/2016.
  */
-public class CameraItemAdapter extends RecyclerView.Adapter<CameraItemAdapter.MyViewHolder> {
+public class CameraItemAdapter extends RecyclerView.Adapter<CameraItemAdapter.MyViewHolder>  {
+
     private List<CameraViewItem> cameraViewItemList;
 
     public CameraItemAdapter(List<CameraViewItem> cameraViewItemList) {
@@ -24,6 +27,10 @@ public class CameraItemAdapter extends RecyclerView.Adapter<CameraItemAdapter.My
     public void UpdateCameraList(List<CameraViewItem> cameraViewItemList){
         this.cameraViewItemList = cameraViewItemList;
         notifyDataSetChanged();
+    }
+
+    public CameraViewItem getCameraItem(int position){
+        return cameraViewItemList.get(position);
     }
 
     @Override
@@ -36,8 +43,8 @@ public class CameraItemAdapter extends RecyclerView.Adapter<CameraItemAdapter.My
     public void onBindViewHolder(MyViewHolder holder, int position) {
         CameraViewItem item = cameraViewItemList.get(position);
         holder.cameraName.setText(item.getCameraName());
-        holder.ipAddress.setText(item.getIpAddress());
-        holder.protocol.setText(item.getProtocol());
+        holder.url.setText(item.getUrl());
+        holder.position = position;
     }
 
     @Override
@@ -45,13 +52,21 @@ public class CameraItemAdapter extends RecyclerView.Adapter<CameraItemAdapter.My
         return cameraViewItemList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView cameraName, ipAddress, protocol;
+    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+        public TextView cameraName, url;
+        public int position;
         public MyViewHolder(View itemView) {
             super(itemView);
             cameraName = (TextView) itemView.findViewById(R.id.camera_name);
-            ipAddress = (TextView) itemView.findViewById(R.id.ip_address);
-            protocol = (TextView) itemView.findViewById(R.id.protocol);
+            url = (TextView) itemView.findViewById(R.id.ip_address);
+            itemView.setOnCreateContextMenuListener(this);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle("Select The Action");
+            menu.add(0, position, 0, "Edit");//groupId, itemId, order, title
+            menu.add(0, position, 0, "Delete");
         }
     }
 }
