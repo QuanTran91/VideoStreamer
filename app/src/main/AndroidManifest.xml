@@ -48,7 +48,6 @@
         <activity
             android:name=".activity.AddOrUpdateCameraActivity"
             android:theme="@style/Base.Theme.AppCompat.Light.Dialog"></activity>
-        <activity android:name=".activity.VideoStreamActivity"></activity>
     </application>
 
 </manifest>

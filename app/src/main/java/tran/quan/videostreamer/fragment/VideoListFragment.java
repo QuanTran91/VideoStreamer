@@ -50,7 +50,7 @@ public class VideoListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_video_list, container, false);
         cameraItemsList = (RecyclerView) view.findViewById(R.id.camera_items);
-        final List<CameraViewItem> items = DatabaseHandler.INSTANCE.getCameraList();
+        List<CameraViewItem> items = DatabaseHandler.INSTANCE.getCameraList();
         adapter = new CameraItemAdapter(items);
         cameraItemsList.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         cameraItemsList.setItemAnimator(new DefaultItemAnimator());
@@ -58,7 +58,7 @@ public class VideoListFragment extends Fragment {
         cameraItemsList.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                mListener.OnPlayItem(items.get(position));
+                PlayItem(position);
             }
         }));
 
@@ -72,6 +72,10 @@ public class VideoListFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void PlayItem(int position){
+        mListener.OnPlayItem(adapter.getCameraItem(position));
     }
 
     private void addOrUpCamera(CameraViewItem item){
@@ -119,11 +123,12 @@ public class VideoListFragment extends Fragment {
 
         if ("Delete".equals(action)) {
              DatabaseHandler.INSTANCE.deleteCamera(cameraViewItem);
-             updateCameraList();
-        }else if("Edit".equals(action)){
+        }
+        else if("Edit".equals(action)){
             addOrUpCamera(cameraViewItem);
         }
 
+        updateCameraList();
         return super.onContextItemSelected(item);
     }
 }
