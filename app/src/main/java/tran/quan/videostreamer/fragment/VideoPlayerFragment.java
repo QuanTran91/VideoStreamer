@@ -84,7 +84,13 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     @Override
     public void onResume() {
         super.onResume();
+        doCleanUp();
+        String path = cameraViewItem.getUrl();
+        if (path == "") {
+            return;
+        }
 
+        PlayVideo(path);
     }
 
     @Override
@@ -110,37 +116,6 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
 
     }
-
-    @Override
-    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        //return super.onCreateAnimation(transit, enter, nextAnim);
-        Animation anim = AnimationUtils.loadAnimation(getActivity(), nextAnim);
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                doCleanUp();
-                String path = cameraViewItem.getUrl();
-                if (path == "") {
-                    return;
-                }
-
-                PlayVideo(path);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
-        return anim;
-    }
-
     private void PlayVideo(String path) {
         mMediaPlayer = new MediaPlayer(getActivity());
         try {
@@ -155,8 +130,6 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
         mMediaPlayer.setOnCompletionListener(this);
         mMediaPlayer.setOnPreparedListener(this);
         mMediaPlayer.setOnVideoSizeChangedListener(this);
-        //  mMediaPlayer.getMetadata();
-        //setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
     @Override
