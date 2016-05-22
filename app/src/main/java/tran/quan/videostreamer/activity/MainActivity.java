@@ -1,9 +1,14 @@
 package tran.quan.videostreamer.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -30,10 +35,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private io.vov.vitamio.widget.VideoView mVideoView;
     private EditText m_VideoUrlEditText;
 
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals("Test")){
+                String a = "aadf";
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirebaseMessaging.getInstance().subscribeToTopic("/topics/videostreamer");
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("Test");
+        LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
+        bm.registerReceiver(broadcastReceiver, filter);
         if (!LibsChecker.checkVitamioLibs(this))
             return;
         setContentView(tran.quan.videostreamer.R.layout.activity_main);
@@ -45,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.flContent, VideoListFragment.newInstance());
         transaction.commit();
@@ -90,4 +106,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
+
 }
