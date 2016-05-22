@@ -78,6 +78,7 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
         holder.setFormat(PixelFormat.RGBA_8888);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.show();
+        progressDialog.setCancelable(false);
         return view;
     }
 
@@ -122,14 +123,15 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
             mMediaPlayer.setDataSource(path);
             mMediaPlayer.setDisplay(holder);
             mMediaPlayer.prepareAsync();
-        } catch (IOException e) {
+            mMediaPlayer.setOnBufferingUpdateListener(this);
+            mMediaPlayer.setOnCompletionListener(this);
+            mMediaPlayer.setOnPreparedListener(this);
+            mMediaPlayer.setOnVideoSizeChangedListener(this);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        mMediaPlayer.setOnBufferingUpdateListener(this);
-        mMediaPlayer.setOnCompletionListener(this);
-        mMediaPlayer.setOnPreparedListener(this);
-        mMediaPlayer.setOnVideoSizeChangedListener(this);
+
     }
 
     @Override

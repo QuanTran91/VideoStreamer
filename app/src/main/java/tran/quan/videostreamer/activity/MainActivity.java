@@ -15,6 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
+
 import io.vov.vitamio.LibsChecker;
 import tran.quan.videostreamer.R;
 import tran.quan.videostreamer.fragment.VideoListFragment;
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseMessaging.getInstance().subscribeToTopic("/topics/videostreamer");
         if (!LibsChecker.checkVitamioLibs(this))
             return;
         setContentView(tran.quan.videostreamer.R.layout.activity_main);

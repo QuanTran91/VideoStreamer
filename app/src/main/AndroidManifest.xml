@@ -48,6 +48,17 @@
         <activity
             android:name=".activity.AddOrUpdateCameraActivity"
             android:theme="@style/Base.Theme.AppCompat.Light.Dialog"></activity>
+        <service
+            android:name="tran.quan.videostreamer.service.fcm.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="tran.quan.videostreamer.service.fcm.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
-
 </manifest>

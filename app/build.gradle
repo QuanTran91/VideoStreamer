@@ -33,4 +33,7 @@ dependencies {
     compile 'me.neavo:vitamio:4.2.2'
     compile 'com.android.support:support-v4:22.0.0'
     compile 'com.github.satyan:sugar:1.4'
+    compile 'com.google.firebase:firebase-messaging:9.0.0'
 }
+
+apply plugin: 'com.google.gms.google-services'
