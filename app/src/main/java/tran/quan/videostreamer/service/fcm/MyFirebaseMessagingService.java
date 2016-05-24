@@ -21,7 +21,7 @@ import tran.quan.videostreamer.activity.MainActivity;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
-
+    public static final String INTENT_ACTION = "MyFirebaseMsgServiceIntent";
     /**
      * Called when message is received.
      *
@@ -38,8 +38,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification());
         Log.d(TAG, "Notification Message Title: " + remoteMessage.getNotification());
         Log.d(TAG, "Notification Message Body: " + remoteMessage.getData());
-        Intent intent = new Intent("Test");
 
+        Intent intent = new Intent(INTENT_ACTION);
+       // intent.putExtra("test",remoteMessage.getData());
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
         localBroadcastManager.sendBroadcast(intent);
     }

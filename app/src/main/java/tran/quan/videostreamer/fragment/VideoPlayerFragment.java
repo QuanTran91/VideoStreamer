@@ -2,9 +2,14 @@ package tran.quan.videostreamer.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -12,6 +17,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.IOException;
 
@@ -41,6 +48,15 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     private boolean mIsVideoSizeKnown = false;
     private boolean mIsVideoReadyToBePlayed = false;
     private ProgressDialog progressDialog;
+
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals("Test")){
+                String a = "aadf";
+            }
+        }
+    };
 
     public VideoPlayerFragment() {
     }
@@ -79,6 +95,11 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.show();
         progressDialog.setCancelable(false);
+        FirebaseMessaging.getInstance().subscribeToTopic("/topics/videostreamer");
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("Test");
+        LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
+        bm.registerReceiver(broadcastReceiver, filter);
         return view;
     }
 
@@ -99,11 +120,7 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
         super.onDetach();
         releaseMediaPlayer();
         doCleanUp();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+        FirebaseMessaging.getInstance().unsubscribeFromTopic("/topics/videostreamer");
     }
 
     @Override

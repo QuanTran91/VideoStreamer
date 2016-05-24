@@ -34,23 +34,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String pathToFileOrUrl = "rtsp://184.72.239.149/vod/mp4:BigBuckBunny_115k.mov";
     private io.vov.vitamio.widget.VideoView mVideoView;
     private EditText m_VideoUrlEditText;
-
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals("Test")){
-                String a = "aadf";
-            }
-        }
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseMessaging.getInstance().subscribeToTopic("/topics/videostreamer");
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("Test");
-        LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
-        bm.registerReceiver(broadcastReceiver, filter);
+
         if (!LibsChecker.checkVitamioLibs(this))
             return;
         setContentView(tran.quan.videostreamer.R.layout.activity_main);

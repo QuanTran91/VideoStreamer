@@ -9,8 +9,8 @@ import com.orm.dsl.Table;
 @Table
 public class CameraViewItem{
     private Long id;
+    private String cameraId;
     private String cameraName;
-    private boolean isFavorite;
     private String url;
 
     public String getCameraName() {
@@ -19,14 +19,6 @@ public class CameraViewItem{
 
     public void setCameraName(String cameraName) {
         this.cameraName = cameraName;
-    }
-
-    public boolean isFavorite() {
-        return isFavorite;
-    }
-
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
     }
 
     public String getUrl() {
@@ -38,6 +30,14 @@ public class CameraViewItem{
     }
     public Long getId() {
         return id;
+    }
+
+    public String getCameraId() {
+        return cameraId;
+    }
+
+    public void setCameraId(String cameraId) {
+        this.cameraId = cameraId;
     }
 
     public CameraViewItem(){}

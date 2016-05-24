@@ -11,11 +11,36 @@ import org.parceler.Parcel;
 @Parcel
 public class Camera
 {
-    @SerializedName("value")
-    private Integer someValue;
+    @SerializedName("camera_id")
+    private String id;
 
-    @SerializedName("message")
-    private String strMessage;
+    @SerializedName("name")
+    private String name;
 
-    //Getters and setters
+    @SerializedName("video_url")
+    private String videoUrl;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
 }

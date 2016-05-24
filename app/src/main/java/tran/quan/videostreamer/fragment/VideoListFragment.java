@@ -13,18 +13,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import tran.quan.videostreamer.R;
 import tran.quan.videostreamer.activity.AddOrUpdateCameraActivity;
 import tran.quan.videostreamer.adapter.CameraItemAdapter;
 import tran.quan.videostreamer.business.DatabaseHandler;
 import tran.quan.videostreamer.interfaces.VideoListFragmentSelectedItemListener;
 import tran.quan.videostreamer.model.CameraViewItem;
+import tran.quan.videostreamer.service.fcm.webservice.CameraService;
+import tran.quan.videostreamer.service.fcm.webservice.servicemodel.Camera;
 import tran.quan.videostreamer.viewlistener.RecyclerItemClickListener;
 
 public class VideoListFragment extends Fragment {
 
+    public static String WebApiAddress = "http://192.168.1.4:64015/";
     RecyclerView cameraItemsList;
     CameraItemAdapter adapter;
     private VideoListFragmentSelectedItemListener mListener;
@@ -71,7 +80,38 @@ public class VideoListFragment extends Fragment {
             }
         });
 
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(WebApiAddress).addConverterFactory(GsonConverterFactory.create()).build();
+        CameraService cameraService = retrofit.create(CameraService.class);
+        Call<List<Camera>> call = cameraService.getCamera();
+        call.enqueue(new Callback<List<Camera>>() {
+            @Override
+            public void onResponse(Call<List<Camera>> call, Response<List<Camera>> response) {
+                    UpdateCamera(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<Camera>> call, Throwable t) {
+
+            }
+        });
         return view;
+    }
+
+    private void UpdateCamera(List<Camera> body) {
+        List<CameraViewItem> items = new ArrayList<>();
+
+        for (Camera item:body) {
+            CameraViewItem cameraItem = new CameraViewItem();
+            cameraItem.setCameraId(item.getId());
+            cameraItem.setCameraName(item.getName());
+            cameraItem.setUrl(item.getVideoUrl());
+            items.add(cameraItem);
+            DatabaseHandler.INSTANCE.addCamera(cameraItem);
+        }
+
+        adapter = new CameraItemAdapter(items);
+        cameraItemsList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     private void PlayItem(int position){
