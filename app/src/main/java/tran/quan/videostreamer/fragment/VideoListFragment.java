@@ -25,6 +25,7 @@ import tran.quan.videostreamer.R;
 import tran.quan.videostreamer.activity.AddOrUpdateCameraActivity;
 import tran.quan.videostreamer.adapter.CameraItemAdapter;
 import tran.quan.videostreamer.business.DatabaseHandler;
+import tran.quan.videostreamer.business.WebserviceHandler;
 import tran.quan.videostreamer.interfaces.VideoListFragmentSelectedItemListener;
 import tran.quan.videostreamer.model.CameraViewItem;
 import tran.quan.videostreamer.service.fcm.webservice.CameraService;
@@ -72,15 +73,15 @@ public class VideoListFragment extends Fragment {
         }));
 
         adapter.notifyDataSetChanged();
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addOrUpCamera(null);
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                addOrUpCamera(null);
+//            }
+//        });
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(WebApiAddress).addConverterFactory(GsonConverterFactory.create()).build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(WebserviceHandler.INSTANCE.getWebserviceAddress()).addConverterFactory(GsonConverterFactory.create()).build();
         CameraService cameraService = retrofit.create(CameraService.class);
         Call<List<Camera>> call = cameraService.getCamera();
         call.enqueue(new Callback<List<Camera>>() {

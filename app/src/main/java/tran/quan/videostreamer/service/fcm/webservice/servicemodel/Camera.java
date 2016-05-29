@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
 
+import java.util.UUID;
+
 /**
  * Created by myrap_000 on 5/23/2016.
  */
@@ -12,7 +14,7 @@ import org.parceler.Parcel;
 public class Camera
 {
     @SerializedName("camera_id")
-    private String id;
+    private UUID id;
 
     @SerializedName("name")
     private String name;
@@ -20,11 +22,11 @@ public class Camera
     @SerializedName("video_url")
     private String videoUrl;
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

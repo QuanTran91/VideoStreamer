@@ -77,8 +77,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_settings){
+            Intent intent = new Intent(this,SettingActivity.class);
+            startActivity(intent);
+            return true;
+        }
         return true;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        return   true;
     }
 
     @Override

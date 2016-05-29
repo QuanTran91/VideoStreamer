@@ -12,6 +12,8 @@ import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import tran.quan.videostreamer.activity.MainActivity;
 
@@ -22,6 +24,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
     public static final String INTENT_ACTION = "MyFirebaseMsgServiceIntent";
+    public static final String FCM_EXTRA = "FCM_EXTRA";
     /**
      * Called when message is received.
      *
@@ -40,7 +43,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Notification Message Body: " + remoteMessage.getData());
 
         Intent intent = new Intent(INTENT_ACTION);
-       // intent.putExtra("test",remoteMessage.getData());
+        Gson gson = new Gson();
+        String json = gson.toJson(remoteMessage.getData());
+        intent.putExtra(FCM_EXTRA,json);
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
         localBroadcastManager.sendBroadcast(intent);
     }

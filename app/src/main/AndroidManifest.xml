@@ -47,18 +47,21 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.AddOrUpdateCameraActivity"
-            android:theme="@style/Base.Theme.AppCompat.Light.Dialog"></activity>
-        <service
-            android:name="tran.quan.videostreamer.service.fcm.MyFirebaseMessagingService">
+            android:theme="@style/Base.Theme.AppCompat.Light.Dialog" />
+
+        <service android:name=".service.fcm.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name="tran.quan.videostreamer.service.fcm.MyFirebaseInstanceIDService">
+        <service android:name=".service.fcm.MyFirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+        <activity android:name=".activity.SettingActivity"
+            android:theme="@style/Base.Theme.AppCompat.Light.Dialog" ></activity>
     </application>
+
 </manifest>

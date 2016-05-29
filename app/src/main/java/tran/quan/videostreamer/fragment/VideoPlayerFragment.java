@@ -1,6 +1,5 @@
 package tran.quan.videostreamer.fragment;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,19 +13,23 @@ import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Map;
 
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.utils.Log;
 import tran.quan.videostreamer.R;
 import tran.quan.videostreamer.model.CameraViewItem;
+import tran.quan.videostreamer.service.fcm.MyFirebaseMessagingService;
+import tran.quan.videostreamer.service.fcm.webservice.servicemodel.SensorEvent;
+import tran.quan.videostreamer.service.fcm.webservice.servicemodel.SensorEventType;
 
 public class VideoPlayerFragment extends Fragment implements View.OnClickListener, SurfaceHolder.Callback, MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnVideoSizeChangedListener {
 
@@ -37,8 +40,15 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     private int mVideoHeight;
     private MediaPlayer mMediaPlayer;
     private SurfaceHolder holder;
-    private String path;
+    private String m_Path;
     private Bundle extras;
+    //
+    private TextView mSensorTemperature;
+    private TextView mSensorAirQuality;
+    private TextView mSensorHumidity;
+    private TextView mSensorMotionDetection;
+
+    //
     private static final String MEDIA = "media";
     private static final int LOCAL_AUDIO = 1;
     private static final int STREAM_AUDIO = 2;
@@ -52,11 +62,67 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals("Test")){
-                String a = "aadf";
+            if(intent.getAction().equals(MyFirebaseMessagingService.INTENT_ACTION)){
+                String result = intent.getExtras().getString(MyFirebaseMessagingService.FCM_EXTRA);
+                Gson gson = new Gson();
+                SensorEvent sensorEvent = gson.fromJson(result, SensorEvent.class);
+                if(cameraViewItem == null || !sensorEvent.getCameraid().equals(cameraViewItem.getCameraId())){
+                    return;
+                }
+
+                switch (sensorEvent.getEventType()){
+                    case SensorEventType.AIRQUALITY:
+                        UpdateAirQuality(sensorEvent.getValue());
+                        break;
+                    case SensorEventType.TEMPERATURE:
+                        UpdateTemperature(sensorEvent.getValue());
+                        break;
+                    case SensorEventType.HUMIDITY:
+                        UpdateHumidity(sensorEvent.getValue());
+                        break;
+                    case SensorEventType.MOTION_DETECTION:
+                        UpdateMotionDetection(sensorEvent.getValue());
+                        break;
+                }
             }
         }
     };
+
+    private void UpdateMotionDetection(double value) {
+        if(mSensorMotionDetection ==null){
+            return;
+        }
+
+        if(value !=0){
+            mSensorMotionDetection.setText("Motion detected");
+        }else{
+            mSensorMotionDetection.setText("");
+        }
+    }
+
+    private void UpdateHumidity(double value) {
+        if(mSensorHumidity == null){
+            return;
+        }
+
+        mSensorHumidity.setText(String.valueOf(value)+"%");
+    }
+
+    private void UpdateTemperature(double value) {
+        if(mSensorTemperature == null){
+            return;
+        }
+
+        mSensorTemperature.setText(String.valueOf(value)+"°C");
+    }
+
+    private void UpdateAirQuality(double value) {
+        if(mSensorAirQuality == null){
+            return;
+        }
+
+        mSensorAirQuality.setText(String.valueOf(value)+"%");
+    }
 
     public VideoPlayerFragment() {
     }
@@ -84,21 +150,23 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_video_player, container, false);
         mPreview = (io.vov.vitamio.widget.VideoView) view.findViewById(R.id.surface);
-        TextView cameraName = (TextView) view.findViewById(R.id.camera_name);
-        TextView cameraurl = (TextView) view.findViewById(R.id.camera_url);
-        cameraName.setText(cameraViewItem.getCameraName());
-        cameraurl.setText(cameraViewItem.getUrl());
+        m_Path = cameraViewItem.getUrl();
+        mSensorHumidity = (TextView)view.findViewById(R.id.sensor_humidity);
+        mSensorTemperature = (TextView)view.findViewById(R.id.sensor_temperature);
+        mSensorAirQuality = (TextView)view.findViewById(R.id.sensor_air_quality);
+        mSensorMotionDetection = (TextView)view.findViewById(R.id.sensor_motion_detection);
+
 
         holder = mPreview.getHolder();
         holder.addCallback(this);
         holder.setFormat(PixelFormat.RGBA_8888);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.show();
+       // progressDialog.show();
         progressDialog.setCancelable(false);
         FirebaseMessaging.getInstance().subscribeToTopic("/topics/videostreamer");
         IntentFilter filter = new IntentFilter();
-        filter.addAction("Test");
-        LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this);
+        filter.addAction(MyFirebaseMessagingService.INTENT_ACTION);
+        LocalBroadcastManager bm = LocalBroadcastManager.getInstance(this.getContext());
         bm.registerReceiver(broadcastReceiver, filter);
         return view;
     }

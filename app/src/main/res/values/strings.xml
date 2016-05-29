@@ -13,6 +13,11 @@
     <string name="control">Control</string>
     <string name="camera">Camera</string>
     <string name="address">Address</string>
+    <string name="camera_name_text">Camera</string>
+    <string name="temperature">Temperature</string>
+    <string name="humidity">Humidity</string>
+    <string name="motion">Motion</string>
+    <string name="air_quality">Air quality</string>
     <string-array name="video_protocol">
         <item>RTSP</item>
         <item>HTTP</item>

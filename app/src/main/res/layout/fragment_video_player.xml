@@ -3,44 +3,107 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="tran.quan.videostreamer.fragment.VideoPlayerFragment">
+
+<RelativeLayout
+    android:id="@+id/camera_info_layout"
+    android:layout_width="match_parent"
+    android:layout_height="140dp">
     <LinearLayout
-        android:id="@+id/camera_name_layout"
-        android:orientation="horizontal"
+        android:id="@+id/camera_info_layout_top"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-        <TextView
-            android:layout_width="60dp"
-            android:gravity="center_vertical"
+        android:layout_height="70dp"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="@string/camera"/>
-        <TextView
-            android:id="@+id/camera_name"
-            android:gravity="center_vertical"
-            android:layout_width="match_parent"
+            android:layout_weight=".5">
+            <TextView
+                android:id="@+id/camera_temperature"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="14sp"
+                android:text="@string/temperature"
+                android:textColor="@color/greenTextColor"/>
+            <TextView
+                android:id="@+id/sensor_temperature"
+                android:layout_below="@+id/camera_temperature"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
+                android:text="35°C"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-           />
+            android:layout_weight=".5">
+            <TextView
+                android:id="@+id/camera_air_quality"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="14sp"
+                android:text="@string/air_quality"
+                android:textColor="@color/greenTextColor"/>
+            <TextView
+                android:id="@+id/sensor_air_quality"
+                android:layout_below="@+id/camera_air_quality"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
+                android:text="67%"/>
+        </RelativeLayout>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/camera_url_layout"
-        android:layout_below="@+id/camera_name_layout"
-        android:orientation="horizontal"
+        android:layout_below="@+id/camera_info_layout_top"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-        <TextView
-            android:layout_width="60dp"
-            android:gravity="center_vertical"
+        android:layout_height="70dp"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="@string/address"/>
-        <TextView
-            android:gravity="center_vertical"
-            android:id="@+id/camera_url"
-            android:layout_width="match_parent"
+            android:layout_weight=".5">
+            <TextView
+                android:id="@+id/camera_humidity"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="14sp"
+                android:text="@string/humidity"
+                android:textColor="@color/greenTextColor"/>
+            <TextView
+                android:id="@+id/sensor_humidity"
+                android:layout_below="@+id/camera_humidity"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
+                android:text="46%"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            />
+            android:layout_weight=".5">
+            <TextView
+                android:id="@+id/camera_motion_detection"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:textSize="14sp"
+                android:text="@string/motion"
+                android:textColor="@color/greenTextColor"/>
+            <TextView
+                android:id="@+id/sensor_motion_detection"
+                android:layout_below="@+id/camera_motion_detection"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="22sp"
+                android:gravity="center_vertical"
+                android:text="Motion detected"/>
+        </RelativeLayout>
     </LinearLayout>
+</RelativeLayout>
     <io.vov.vitamio.widget.VideoView
         android:id="@+id/surface"
-        android:layout_below="@+id/camera_url_layout"
+        android:layout_below="@+id/camera_info_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"

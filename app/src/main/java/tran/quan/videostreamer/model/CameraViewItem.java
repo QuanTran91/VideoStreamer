@@ -3,13 +3,15 @@ package tran.quan.videostreamer.model;
 
 import com.orm.dsl.Table;
 
+import java.util.UUID;
+
 /**
  * Created by myrap_000 on 4/25/2016.
  */
 @Table
 public class CameraViewItem{
     private Long id;
-    private String cameraId;
+    private UUID cameraId;
     private String cameraName;
     private String url;
 
@@ -32,11 +34,11 @@ public class CameraViewItem{
         return id;
     }
 
-    public String getCameraId() {
+    public UUID getCameraId() {
         return cameraId;
     }
 
-    public void setCameraId(String cameraId) {
+    public void setCameraId(UUID cameraId) {
         this.cameraId = cameraId;
     }
 
