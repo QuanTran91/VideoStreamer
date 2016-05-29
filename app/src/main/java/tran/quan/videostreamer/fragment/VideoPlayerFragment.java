@@ -161,7 +161,7 @@ public class VideoPlayerFragment extends Fragment implements View.OnClickListene
         holder.addCallback(this);
         holder.setFormat(PixelFormat.RGBA_8888);
         progressDialog = new ProgressDialog(getActivity());
-       // progressDialog.show();
+        progressDialog.show();
         progressDialog.setCancelable(false);
         FirebaseMessaging.getInstance().subscribeToTopic("/topics/videostreamer");
         IntentFilter filter = new IntentFilter();

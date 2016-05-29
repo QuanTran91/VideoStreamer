@@ -36,6 +36,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         if(v==btnOk){
             v.setEnabled(false);
             WebserviceHandler.INSTANCE.updateWebservice(webApiAddress.getText().toString());
+            finish();
         }
+        return;
     }
 }

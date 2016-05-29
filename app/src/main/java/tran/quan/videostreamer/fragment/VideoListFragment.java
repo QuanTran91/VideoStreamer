@@ -1,6 +1,7 @@
 package tran.quan.videostreamer.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -37,6 +38,8 @@ public class VideoListFragment extends Fragment {
     public static String WebApiAddress = "http://192.168.1.4:64015/";
     RecyclerView cameraItemsList;
     CameraItemAdapter adapter;
+    private ProgressDialog progressDialog;
+
     private VideoListFragmentSelectedItemListener mListener;
 
     public VideoListFragment() {
@@ -61,6 +64,10 @@ public class VideoListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_video_list, container, false);
         cameraItemsList = (RecyclerView) view.findViewById(R.id.camera_items);
         List<CameraViewItem> items = DatabaseHandler.INSTANCE.getCameraList();
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle("Loading camera");
+        progressDialog.show();
+        progressDialog.setCancelable(false);
         adapter = new CameraItemAdapter(items);
         cameraItemsList.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         cameraItemsList.setItemAnimator(new DefaultItemAnimator());
@@ -73,14 +80,6 @@ public class VideoListFragment extends Fragment {
         }));
 
         adapter.notifyDataSetChanged();
-//        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                addOrUpCamera(null);
-//            }
-//        });
-
         Retrofit retrofit = new Retrofit.Builder().baseUrl(WebserviceHandler.INSTANCE.getWebserviceAddress()).addConverterFactory(GsonConverterFactory.create()).build();
         CameraService cameraService = retrofit.create(CameraService.class);
         Call<List<Camera>> call = cameraService.getCamera();
@@ -88,13 +87,17 @@ public class VideoListFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Camera>> call, Response<List<Camera>> response) {
                     UpdateCamera(response.body());
+                    progressDialog.dismiss();
+
             }
 
             @Override
             public void onFailure(Call<List<Camera>> call, Throwable t) {
-
+                progressDialog.dismiss();
             }
         });
+
+
         return view;
     }
 
